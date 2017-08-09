@@ -3,8 +3,8 @@
 from urllib.request import urlopen
 from basic import Basic
 
-class Menu(object):
 
+class Menu(object):
     def __init__(self):
         pass
 
@@ -24,12 +24,13 @@ class Menu(object):
         postUrl = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=%s" % accessToken
         urlResp = urlopen(url=postUrl)
         print(urlResp.read())
-        
-    #获取自定义菜单配置接口
+
+    # 获取自定义菜单配置接口
     def get_current_selfmenu_info(self, accessToken):
         postUrl = "https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=%s" % accessToken
         urlResp = urlopen(url=postUrl)
         print(urlResp.read())
+
 
 if __name__ == '__main__':
 
@@ -39,29 +40,29 @@ if __name__ == '__main__':
         "button":
         [
             {
-                "name": "事件订阅",
+                "name": "获取事件",
                 "sub_button":
                 [
                     {
                         "type": "click",
                         "name": "增持",
-                        "key":	"subscribe_event_increase"
+                        "key":	"acquire_event_holding_increase"
                     },
                     {
                         "type": "click",
                         "name": "减持",
-                        "key":	"subscribe_event_decrease"
+                        "key":	"acquire_event_holding_decrease"
                     },
                     {
                         "type": "click",
                         "name": "预增",
-                        "key":	"subscribe_event_gonna_increase"
+                        "key":	"acquire_event_forecast_growth"
                     },
-		    {
-			"type": "click",
-			"name": "预减",
-			"key":	"subscribe_event_gonna_decrease"
-		    }
+                    {
+                        "type": "click",
+                        "name": "预减",
+                        "key":	"acquire_event_forecast_decline"
+                    }
                 ]
             },
             {
@@ -73,6 +74,5 @@ if __name__ == '__main__':
     }
     """
     accessToken = Basic().get_access_token()
-    #myMenu.delete(accessToken)
+    # myMenu.delete(accessToken)
     myMenu.create(postJson, accessToken)
-
