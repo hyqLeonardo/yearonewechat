@@ -18,7 +18,7 @@ def previous_days_event2file(days_before_today):
 
     today_str = datetime2ymd_str(today)
     start_str = datetime2ymd_str(start_date)
-    write_file_path = './file/events_{}_to_{}.csv'.format(start_str, today_str)
+    write_file_path = './file/events_from_{}_to_{}.csv'.format(start_str, today_str)
 
     # return if already has the file
     if os.path.isfile(write_file_path):
@@ -44,6 +44,9 @@ def event_to_push2file(event_name, days_before_today=7):
     if event_name not in ALL_EVENTS:
         print("event {} has not been defined yet".format(event_name))
         return
+
+    print("generating previous {} days event csv file..."
+          .format(days_before_today))
 
     event_dict = ALL_EVENTS.get(event_name)
     target_words = event_dict.target_words
@@ -79,4 +82,5 @@ def event_to_push2file(event_name, days_before_today=7):
 if __name__ == '__main__':
 
     for event_name in ALL_EVENTS:
+        print("now generating event list file for {}...".format(event_name))
         event_to_push2file(event_name)
