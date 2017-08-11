@@ -56,10 +56,17 @@ class Handle(object):
                         print('pushing event {}'.format(event_name))
                         with open('./file/{}_{}.txt'.format(event_name, today_str)) as file:
                             content = file.read()
-                        replyMsg = reply.TextMsg(toUser, fromUser, content)
-                        return replyMsg
 
-            print("暂且不处理")
+                        if len(content) > 1000:
+                            content = '因列表过长，只摘选部分事件，请点击此链接查看完整列表。\n\n'\
+                                      + content
+                            replyMsg = reply.TextMsg(toUser, fromUser, content[:1000])
+                        else:
+                            replyMsg = reply.TextMsg(toUser, fromUser, content)
+
+                        return replyMsg.send()
+
+            print("暂不处理 {} 类型的请求".format(type(recMsg)))
             return reply.Msg().send()
 
         except Exception as Argument:
