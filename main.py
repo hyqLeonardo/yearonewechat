@@ -5,6 +5,7 @@ from handle import Handle
 
 urls = (
     '/wx', 'Handle',
+    '/wx/event/acquire.+', 'Acquire'
 )
 
 if __name__ == '__main__':

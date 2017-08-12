@@ -52,14 +52,19 @@ class Handle(object):
 
                         today = datetime.datetime.now() - datetime.timedelta(days=1)
                         today_str = datetime2ymd_str(today)
-                        event_name = recMsg.EventKey[14:]
+                        event_name = recMsg.EventKey[14:]   # get event name
                         print('pushing event {}'.format(event_name))
-                        with open('./file/{}_{}.txt'.format(event_name, today_str)) as file:
+                        file_path = './file/event/{}_{}.txt'.format(event_name, today_str)
+                        html_path = './file/event/{}_{}.html'.format(event_name, today_str)
+                        with open(file_path) as file:
                             content = file.read()
 
                         if len(content) > 1000:
-                            content = '因列表过长，只摘选部分事件，请点击此链接查看完整列表。\n\n'\
-                                      + content
+                            url = "http://139.224.234.82/wx/event/acquire?file={}"\
+                                .format(html_path)
+                            hyper_link = "<a href=\"{}\">此链接</a>".format(url)
+                            content = '因列表过长，只摘选部分事件，请点击{}查看完整列表。\n\n'\
+                                .format(hyper_link) + content
                             replyMsg = reply.TextMsg(toUser, fromUser, content[:1000])
                         else:
                             replyMsg = reply.TextMsg(toUser, fromUser, content)
