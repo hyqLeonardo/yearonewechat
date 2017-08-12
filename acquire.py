@@ -12,7 +12,7 @@ class Acquire(object):
         if len(data) == 0:
             return "hello, no data found"
 
-        # file path is set in url's param file, e.g ?file=./file/event/xxx.html
+        # file path is set in url's param file, e.g ?file=./file/event/today_str/xxx.html
         html_file_path = data.file
 
         with open(html_file_path, 'r') as file:

@@ -4,6 +4,10 @@ from yearonequant.event_object import *
 from subprocess import call
 import os.path
 import re
+# solve the error: NotImplementedError: Implement enable_gui in a subclass
+from IPython import get_ipython
+ip = get_ipython()
+ip.enable_gui = lambda x: False
 
 
 def previous_days_event2file(days_before_today):
@@ -21,8 +25,8 @@ def previous_days_event2file(days_before_today):
     start_display = start_date - datetime.timedelta(days=1)
     start_display_str = datetime2ymd_str(start_display)
 
-    write_file_path = './file/event/events_from_{}_to_{}.csv' \
-        .format(start_display_str, today_str)
+    write_file_path = './file/event/{}/events_from_{}_to_{}.csv' \
+        .format(today_str, start_display_str, today_str)
 
     # return if already has the file
     if os.path.isfile(write_file_path):
@@ -48,6 +52,8 @@ def event_to_push2file(event_name, days_before_today=7):
     :return:    void
     """
 
+    print("\nnow generating event list files for {}...".format(event_name))
+
     if event_name not in ALL_EVENTS:
         print("event {} has not been defined yet".format(event_name))
         return
@@ -61,7 +67,8 @@ def event_to_push2file(event_name, days_before_today=7):
     start_str = matcher_start.group(1)
     today_str = matcher_end.group(1)
 
-    write_file_path = './file/event/{}_{}.txt'.format(event_name, today_str)
+    write_file_path = './file/event/{}/{}_{}.txt'\
+        .format(start_str, event_name, today_str)
     write_fd = open(write_file_path, 'w+')
 
     # get param for filter
@@ -73,11 +80,13 @@ def event_to_push2file(event_name, days_before_today=7):
     lines = str()
     series_list = list()
     df = read_announce_csv(announce_path)
+
     # loop over rows of df
     for date, row in df.iterrows():
         code = complete_code(str(row['Code']))
-        # code has meaning and title pass the filter
-        if date and code and filter_title(row['Title'], target_words, filter_words, filter_mode):
+        passed = filter_title(row['Title'], target_words, filter_words, filter_mode)
+
+        if date and code and passed:
             # prepare txt file content
             title_url = "<a href=\"{}\">{}</a>".format(row['Link'], row['Title'])
             line = "股票代码:{}, 公告标题:{}, 发布时间:{}\n\n".format(code, title_url, date)
@@ -95,10 +104,12 @@ def event_to_push2file(event_name, days_before_today=7):
 
     # write to html file
     filtered_event_df = pd.DataFrame(series_list)
-    html_file_path = './file/event/{}_{}.html'.format(event_name, today_str)
+    html_file_path = './file/event/{}/{}_{}.html'\
+        .format(start_str, event_name, today_str)
     event_df2html(filtered_event_df, html_file_path)
 
-    print("{} {} events, file saved as {}\n".format(count, event_name, write_file_path))
+    print("{} {} events, file saved as {}\n"
+          .format(count, event_name, write_file_path))
 
 
 def transform_event_series(series):
@@ -108,15 +119,15 @@ def transform_event_series(series):
     :param series:  event series
     :return:    human-readable series
     """
-    code = series['Code']
+    code = complete_code(str(series['Code']))
     title = series['Title']
     link = series['Link']
     time = series.name
 
     hyper_text = '<a href=\"{}\">{}</a>'.format(link, title)
 
-    result = pd.Series({'公告标题': hyper_text, '发布时间': time},
-                       name=code)
+    result = pd.Series({'股票代码': code, '公告标题': hyper_text, '发布时间': time})
+
     return result
 
 
@@ -127,7 +138,12 @@ def event_df2html(df, html_file_path):
     :param html_file_path:  path to save the html file
     :return:    void
     """
+
     write_fd = open(html_file_path, 'w')
+
+    if df.shape[0] == 0:
+        write_fd.write("近7天没有该事件")
+        return
 
     styles = [
         hover(),
@@ -145,6 +161,7 @@ def event_df2html(df, html_file_path):
         .render()
 
     write_fd.write(html)
+    print("html done")
 
 
 def hover(hover_color="#9999ff"):
@@ -155,7 +172,6 @@ def hover(hover_color="#9999ff"):
 if __name__ == '__main__':
 
     for event_name in ALL_EVENTS:
-        print("\nnow generating event list file for {}...".format(event_name))
         event_to_push2file(event_name)
         print("#################### finished at {} ####################"
               .format(datetime.datetime.now()))

@@ -28,10 +28,7 @@ class Handle(object):
 
                 if recMsg.MsgType == "image":
                     mediaId = recMsg.MediaId
-                    content = "测试成功,可以正确处理图片消息，返回接受到的图片"
-                    replyTextMsg = reply.TextMsg(toUser, fromUser, content)
                     replyImageMsg = reply.ImageMsg(toUser, fromUser, mediaId)
-                    # return replyTextMsg.send(), replyImageMsg.send() # can't reply 2 message
                     return replyImageMsg.send()
 
             if isinstance(recMsg, receive.EventMsg):
@@ -54,11 +51,15 @@ class Handle(object):
                         today_str = datetime2ymd_str(today)
                         event_name = recMsg.EventKey[14:]   # get event name
                         print('pushing event {}'.format(event_name))
-                        file_path = './file/event/{}_{}.txt'.format(event_name, today_str)
-                        html_path = './file/event/{}_{}.html'.format(event_name, today_str)
+
+                        file_path = './file/event/{}/{}_{}.txt'\
+                            .format(today_str, event_name, today_str)
+                        html_path = './file/event/{}/{}_{}.html'\
+                            .format(today_str, event_name, today_str)
+
                         with open(file_path) as file:
                             content = file.read()
-
+                        # give a link to html page if list too long
                         if len(content) > 1000:
                             url = "http://139.224.234.82/wx/event/acquire?file={}"\
                                 .format(html_path)
