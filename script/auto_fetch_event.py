@@ -154,23 +154,27 @@ def event_df2html(df, html_file_path):
     styles = [
         hover(),
         dict(selector="th", props=[("font-size", "150%"),
-                                   ("text-align", "center")]),
-        dict(selector="caption", props=[("caption-side", "top")])
+                                   ("text-align", "center")])
+        # dict(selector="caption", props=[("caption-side", "top")])
     ]
 
-    html = df.style \
+    css = df.style \
         .set_caption("股票列表") \
-        .set_properties(**{'background-color': '#787879',
+        .set_properties(**{'background-color': '#FFCC66',
                            'color': 'black',
                            'border-color': 'white'}) \
         .set_table_styles(styles) \
         .render()
 
+    html = "<!DOCTYPE html>\n<html lang=\"zh\">\n<head>\n" \
+           "<meta charset=\"utf-8\"/>\n</head>\n{}" \
+           "</body>\n</html>\n".format(css)
+
     write_fd.write(html)
     print("html done")
 
 
-def hover(hover_color="#9999ff"):
+def hover(hover_color="#3399FF"):
     return dict(selector="tr:hover",
                 props=[("background-color", "%s" % hover_color)])
 
