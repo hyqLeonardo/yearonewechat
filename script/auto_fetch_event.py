@@ -3,6 +3,8 @@ from yearonequant.event_object import *
 
 from subprocess import call
 import os.path
+import os
+import sys
 import re
 # solve the error: NotImplementedError: Implement enable_gui in a subclass
 from IPython import get_ipython
@@ -24,6 +26,8 @@ def previous_days_event2file(days_before_today):
     start_str = datetime2ymd_str(start_date)
     start_display = start_date - datetime.timedelta(days=1)
     start_display_str = datetime2ymd_str(start_display)
+
+    os.mkdir('./file/event/{}'.format(today_str))
 
     write_file_path = './file/event/{}/events_from_{}_to_{}.csv' \
         .format(today_str, start_display_str, today_str)
@@ -68,7 +72,7 @@ def event_to_push2file(event_name, days_before_today=7):
     today_str = matcher_end.group(1)
 
     write_file_path = './file/event/{}/{}_{}.txt'\
-        .format(start_str, event_name, today_str)
+        .format(today_str, event_name, today_str)
     write_fd = open(write_file_path, 'w+')
 
     # get param for filter
@@ -105,7 +109,7 @@ def event_to_push2file(event_name, days_before_today=7):
     # write to html file
     filtered_event_df = pd.DataFrame(series_list)
     html_file_path = './file/event/{}/{}_{}.html'\
-        .format(start_str, event_name, today_str)
+        .format(today_str, event_name, today_str)
     event_df2html(filtered_event_df, html_file_path)
 
     print("{} {} events, file saved as {}\n"
