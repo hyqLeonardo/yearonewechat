@@ -13,12 +13,16 @@ def previous_days_event2file(days_before_today):
     :return:    file path of written file
     """
 
+    print("generating previous {} days event csv file..."
+          .format(days_before_today))
+
     today = datetime.datetime.now() - datetime.timedelta(days=1)
     start_date = today - datetime.timedelta(days=days_before_today)
 
     today_str = datetime2ymd_str(today)
     start_str = datetime2ymd_str(start_date)
-    write_file_path = './file/events_from_{}_to_{}.csv'.format(start_str, today_str)
+    write_file_path = './file/events_from_{}_to_{}.csv'\
+        .format(start_str-datetime.timedelta(days=1), today_str)
 
     # return if already has the file
     if os.path.isfile(write_file_path):
@@ -45,13 +49,8 @@ def event_to_push2file(event_name, days_before_today=7):
         print("event {} has not been defined yet".format(event_name))
         return
 
-    print("generating previous {} days event csv file..."
-          .format(days_before_today))
-
     event_dict = ALL_EVENTS.get(event_name)
-    target_words = event_dict.target_words
-    filter_words = event_dict.target_words
-    filter_mode = event_dict.filter_mode
+    print("generating {} event list...".format(event_name))
 
     announce_path = str(previous_days_event2file(days_before_today))
 
@@ -61,13 +60,18 @@ def event_to_push2file(event_name, days_before_today=7):
     today_str = matcher_end.group(1)
 
     write_file_path = './file/{}_{}.txt'.format(event_name, today_str)
-    write_fd = open(write_file_path, 'w')
+    write_fd = open(write_file_path, 'w+')
     write_fd.write("以下是从{}到{}的所有{}事件\n"
                    "点击蓝色的\"公告标题\"可以下载公告文件\n\n"
                    .format(start_str, today_str, event_dict.chinese_name))
 
     df = read_announce_csv(announce_path)
 
+    target_words = event_dict.target_words
+    filter_words = event_dict.filter_words
+    filter_mode = event_dict.filter_mode
+
+    count = 0
     # loop over rows of df
     for date, row in df.iterrows():
         code = complete_code(str(row['Code']))
@@ -76,8 +80,9 @@ def event_to_push2file(event_name, days_before_today=7):
             title_url = "<a href=\"{}\">{}</a>".format(row['Link'], row['Title'])
             line = "股票代码:{}, 公告标题:{}, 发布时间:{}\n\n".format(code, title_url, date)
             write_fd.write(line)
+            count += 1
 
-    print("file saved as {}".format(write_file_path))
+    print("{} {} events, file saved as {}".format(count, event_name, write_file_path))
 
 if __name__ == '__main__':
 

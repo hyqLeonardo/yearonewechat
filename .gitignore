@@ -28,6 +28,7 @@ test_file/
 docs/
 .ipynb_checkpoints/
 yearonequant/bin/
+log/
 
 # Packages #
 ############
