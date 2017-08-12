@@ -27,7 +27,9 @@ def previous_days_event2file(days_before_today):
     start_display = start_date - datetime.timedelta(days=1)
     start_display_str = datetime2ymd_str(start_display)
 
-    os.mkdir('./file/event/{}'.format(today_str))
+    directory = './file/event/{}'.format(today_str)
+    if not os.path.isdir(directory):
+        os.mkdir(directory)
 
     write_file_path = './file/event/{}/events_from_{}_to_{}.csv' \
         .format(today_str, start_display_str, today_str)
