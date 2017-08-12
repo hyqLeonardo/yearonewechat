@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-# filename: handle.py
+# filename: show.py
 
 import web
 
 
-class Acquire(object):
+class Show(object):
 
     def GET(self):
 

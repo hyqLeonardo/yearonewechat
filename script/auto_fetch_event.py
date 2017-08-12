@@ -73,8 +73,8 @@ def event_to_push2file(event_name, days_before_today=7):
     start_str = matcher_start.group(1)
     today_str = matcher_end.group(1)
 
-    write_file_path = './file/event/{}/{}_{}.txt'\
-        .format(today_str, event_name, today_str)
+    write_file_path = './file/event/{}/{}.txt'\
+        .format(today_str, event_name)
     write_fd = open(write_file_path, 'w+')
 
     # get param for filter
@@ -110,8 +110,8 @@ def event_to_push2file(event_name, days_before_today=7):
 
     # write to html file
     filtered_event_df = pd.DataFrame(series_list)
-    html_file_path = './file/event/{}/{}_{}.html'\
-        .format(today_str, event_name, today_str)
+    html_file_path = './file/event/{}/{}.html'\
+        .format(today_str, event_name)
     event_df2html(filtered_event_df, html_file_path)
 
     print("{} {} events, file saved as {}\n"
