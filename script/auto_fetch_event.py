@@ -4,7 +4,6 @@ from yearonequant.event_object import *
 from subprocess import call
 import os.path
 import os
-import sys
 import re
 # solve the error: NotImplementedError: Implement enable_gui in a subclass
 from IPython import get_ipython

@@ -52,10 +52,10 @@ class Handle(object):
                         event_name = recMsg.EventKey[14:]   # get event name
                         print('pushing event {}'.format(event_name))
 
-                        file_path = './file/event/{}/{}_{}.txt'\
-                            .format(today_str, event_name, today_str)
-                        html_path = './file/event/{}/{}_{}.html'\
-                            .format(today_str, event_name, today_str)
+                        file_path = './file/event/{}/{}.txt'\
+                            .format(today_str, event_name)
+                        html_path = './file/event/{}/{}.html'\
+                            .format(today_str, event_name)
 
                         with open(file_path) as file:
                             content = file.read()
