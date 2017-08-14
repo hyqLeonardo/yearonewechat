@@ -12,6 +12,8 @@ from collections import defaultdict  # listmultimap
 from IPython import get_ipython
 ip = get_ipython()
 ip.enable_gui = lambda x: False
+# initialize rqdatac to enable online functions such as get_price()
+rqdatac.init('xinjin', '123456', ('172.19.182.162', 16003))
 
 
 def previous_days_event2file(days_before_today):
@@ -90,16 +92,21 @@ def event_to_push2file(event_name, days_before_today=7):
     df = read_announce_csv(announce_path)
 
     # loop over rows of df
-    found_dict = defaultdict()  # code to title map, make list unique
+    found_dict = defaultdict(list)  # code to title map, make list unique
     for date, row in df.iterrows():
         code = complete_code(str(row['Code']))
-        symbol = instruments(code).symbol
+        if not code:
+            continue
+        info = instruments(code)
+        if not info:
+            continue
+        symbol = info.symbol
         title = row['Title']
 
         passed = filter_title(title, target_words, filter_words, filter_mode)
         if date and symbol and passed:
-            if title in found_dict[code]:
-                pass    # pass if same title already in dict
+            if code in found_dict and title in found_dict[code]:
+                continue     # pass if same title already in dict
             found_dict[code].append(title)
             # prepare txt file content
             title_url = "<a href=\"{}\">{}</a>".format(row['Link'], row['Title'])
