@@ -5,6 +5,9 @@ from subprocess import call
 import os.path
 import os
 import re
+
+from collections import defaultdict  # listmultimap
+
 # solve the error: NotImplementedError: Implement enable_gui in a subclass
 from IPython import get_ipython
 ip = get_ipython()
@@ -87,14 +90,20 @@ def event_to_push2file(event_name, days_before_today=7):
     df = read_announce_csv(announce_path)
 
     # loop over rows of df
+    found_dict = defaultdict()  # code to title map, make list unique
     for date, row in df.iterrows():
         code = complete_code(str(row['Code']))
-        passed = filter_title(row['Title'], target_words, filter_words, filter_mode)
+        symbol = instruments(code).symbol
+        title = row['Title']
 
-        if date and code and passed:
+        passed = filter_title(title, target_words, filter_words, filter_mode)
+        if date and symbol and passed:
+            if title in found_dict[code]:
+                pass    # pass if same title already in dict
+            found_dict[code].append(title)
             # prepare txt file content
             title_url = "<a href=\"{}\">{}</a>".format(row['Link'], row['Title'])
-            line = "股票代码:{}, 公告标题:{}, 发布时间:{}\n\n".format(code, title_url, date)
+            line = "股票名称:{}, 公告标题:{}, 发布时间:{}\n\n".format(symbol, title_url, date)
             lines += line
             # prepare html file content
             series_list.append(transform_event_series(row))
@@ -125,13 +134,14 @@ def transform_event_series(series):
     :return:    human-readable series
     """
     code = complete_code(str(series['Code']))
+    symbol = instruments(code).symbol
     title = series['Title']
     link = series['Link']
     time = series.name
 
     hyper_text = '<a href=\"{}\">{}</a>'.format(link, title)
 
-    result = pd.Series({'股票代码': code, '公告标题': hyper_text, '发布时间': time})
+    result = pd.Series({'股票名称': symbol, '公告标题': hyper_text, '发布时间': time})
 
     return result
 
