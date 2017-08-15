@@ -67,6 +67,21 @@ if __name__ == '__main__':
                         "type": "click",
                         "name": "预减",
                         "key":	"acquire_event_forecast_decline"
+                    },
+                    {
+                        "type": "click",
+                        "name": "调研",
+                        "key":	"acquire_event_research"
+                    },
+                    {
+                        "type": "click",
+                        "name": "高送转",
+                        "key":	"acquire_event_high_stock_dividend"
+                    },
+                    {
+                        "type": "click",
+                        "name": "重大资产重组",
+                        "key":	"acquire_event_major_asset_restructure"
                     }
                 ]
             },

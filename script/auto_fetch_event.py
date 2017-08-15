@@ -54,6 +54,59 @@ def previous_days_event2file(days_before_today):
     return write_file_path
 
 
+def event_to_push_to_file(announce_file, event_name, all_event_dict, days_before_today=7):
+    """
+
+    :param announce_file:       announcement file crawled from info
+    :param event_name:          name of event in English, should be a key of all_event_dict
+    :param all_event_dict:      dict of event_object, defined in yearonequant.event module
+    :param days_before_today:   number of days previously
+    :return:    DataFrame of filtered events
+    """
+    print("\nnow generating event list files for {}...".format(event_name))
+
+    if event_name not in all_event_dict:
+        print("event {} has not been defined yet".format(event_name))
+        return
+
+    event_dict = all_event_dict.get(event_name)
+
+    # get param for filter
+    target_words = event_dict.target_words
+    filter_words = event_dict.filter_words
+    filter_mode = event_dict.filter_mode
+
+    count = 0
+    lines = str()
+    series_list = list()
+    df = read_announce_csv(announce_file)
+
+    # loop over rows of df
+    found_dict = defaultdict(list)  # code to title map, make list unique
+    for date, row in df.iterrows():
+        code = complete_code(str(row['Code']))
+        if not code:
+            continue
+        info = instruments(code)
+        if not info:
+            continue
+        symbol = info.symbol
+        title = row['Title']
+
+        passed = filter_title(title, target_words, filter_words, filter_mode)
+        if date and symbol and passed:
+            if code in found_dict and title in found_dict[code]:
+                continue     # pass if same title already in dict
+            found_dict[code].append(title)
+            # prepare DataFrame content
+            series_list.append(transform_event_series(row))
+
+            count += 1
+
+    filtered_event_df = pd.DataFrame(series_list)
+    return filtered_event_df
+
+
 def event_to_push2file(event_name, days_before_today=7):
     """
     Save specific events into human-readable format, for pushing to wechat user.
@@ -175,8 +228,7 @@ def event_df2html(df, html_file_path):
     ]
 
     css = df.style \
-        .set_caption("股票列表") \
-        .set_properties(**{'background-color': '#FFCC66',
+        .set_properties(**{'background-color': '#000000',
                            'color': 'black',
                            'border-color': 'white'}) \
         .set_table_styles(styles) \
