@@ -19,7 +19,7 @@ class Basic:
                "client_credential&appid=%s&secret=%s" % (appId, appSecret))
 
         urlResp = urlopen(postUrl)
-        urlResp = json.loads(urlResp.read())
+        urlResp = json.loads(urlResp.read().decode('utf-8'))
         
         self.__accessToken = urlResp['access_token']
         self.__leftTime = urlResp['expires_in']
