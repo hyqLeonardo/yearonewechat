@@ -81,9 +81,9 @@ class Handle(object):
 
                     if recMsg.EventKey == 'acquire_event':
                         event_names = '，'.join(EVENT_NAME_C2E.keys())
-                        content = '回复 E+事件名称 可以获得近7日发生该事件的股票列表。\n' \
-                                  '例如回复： E增持， 便可获得增持事件的列表。\n' \
-                                  '目前支持的事件有{}'.format(event_names)
+                        content = '回复 E+事件名 可获得近7日发生该事件的股票列表。\n\n' \
+                                  '比如回复： E增持， 便可获得增持事件的列表。\n\n' \
+                                  '目前支持的事件有：\n{}。'.format(event_names)
                         replyMsg = reply.TextMsg(toUser, fromUser, content)
                         return replyMsg.send()
 
