@@ -228,7 +228,7 @@ def event_df2html(df, html_file_path):
     ]
 
     css = df.style \
-        .set_properties(**{'background-color': '#000000',
+        .set_properties(**{'background-color': '#FFFFFF',
                            'color': 'black',
                            'border-color': 'white'}) \
         .set_table_styles(styles) \
