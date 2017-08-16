@@ -45,35 +45,9 @@ if __name__ == '__main__':
         "button":
         [
             {
+                "type": "click",
                 "name": "获取事件",
-                "sub_button":
-                [
-                    {
-                        "type": "click",
-                        "name": "增持",
-                        "key":	"acquire_event_holding_increase"
-                    },
-                    {
-                        "type": "click",
-                        "name": "减持",
-                        "key":	"acquire_event_holding_decrease"
-                    },
-                    {
-                        "type": "click",
-                        "name": "预增",
-                        "key":	"acquire_event_forecast_growth"
-                    },
-                    {
-                        "type": "click",
-                        "name": "预减",
-                        "key":	"acquire_event_forecast_decline"
-                    },
-                    {
-                        "type": "click",
-                        "name": "调研",
-                        "key":	"acquire_event_research"
-                    }
-                ]
+                "key":	"acquire_event"
             },
             {
                 "type": "click",
