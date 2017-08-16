@@ -23,8 +23,8 @@ class Handle(object):
             if isinstance(recMsg, receive.Msg):
 
                 if recMsg.MsgType == "text":
-                    text = recMsg.Content
-                    text = text.trim()
+                    text = recMsg.Content.decode('utf-8')
+                    text = text.strip()
 
                     # push event list
                     if text[0] == 'E':
@@ -36,7 +36,6 @@ class Handle(object):
 
                             today = datetime.datetime.now() - datetime.timedelta(days=1)
                             today_str = datetime2ymd_str(today)
-                            event_name = recMsg.EventKey[14:]   # get event name
 
                             file_path = './file/event/{}/{}.txt' \
                                 .format(today_str, event_name)
@@ -53,7 +52,8 @@ class Handle(object):
                                 hyper_link = "<a href=\"{}\">此链接</a>".format(url)
                                 content = '因列表过长，只摘选部分事件，请点击{}查看完整列表。\n\n' \
                                           .format(hyper_link) + content
-                                content = content[:1000][:content.rfind('\n')] + '\n...\n'
+                                content = content[:1000]
+                                content = content[:content.rfind('\n')] + '\n...\n'
                                 replyMsg = reply.TextMsg(toUser, fromUser, content)
                             else:
                                 replyMsg = reply.TextMsg(toUser, fromUser, content)
