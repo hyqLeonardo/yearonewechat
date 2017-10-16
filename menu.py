@@ -45,9 +45,20 @@ if __name__ == '__main__':
         "button":
         [
             {
-                "type": "click",
-                "name": "获取事件",
-                "key":	"acquire_event"
+                "name": "事件",
+                "sub_button":
+                [
+                    {
+                        "type": "click",
+                        "name": "订阅事件",
+                        "key": "subscribe_event"
+                    },
+                    {
+                        "type": "click",
+                        "name": "已订阅事件",
+                        "key": "subscribed_event"
+                    }
+                ]
             },
             {
                 "type": "click",
